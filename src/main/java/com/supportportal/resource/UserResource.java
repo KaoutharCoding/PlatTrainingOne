@@ -130,7 +130,7 @@ public class UserResource extends ExceptionHandling {
         return Files.readAllBytes(Paths.get(USER_FOLDER + username + FORWARD_SLASH + fileName));
     }
 
-    @GetMapping(path = "/image/profile/{username}", produces = IMAGE_JPEG_VALUE)
+  /*  @GetMapping(path = "/image/profile/{username}", produces = IMAGE_JPEG_VALUE)
     public byte[] getTempProfileImage(@PathVariable("username") String username) throws IOException {
         URL url = new URL(TEMP_PROFILE_IMAGE_BASE_URL + username);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -143,7 +143,7 @@ public class UserResource extends ExceptionHandling {
         }
         return byteArrayOutputStream.toByteArray();
     }
-
+*/
     private ResponseEntity<HttpResponse> response(HttpStatus httpStatus, String message) {
         return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase().toUpperCase(),
                 message), httpStatus);

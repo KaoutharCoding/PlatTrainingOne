@@ -18,15 +18,15 @@ import static javax.mail.Message.RecipientType.TO;
 @Service
 public class EmailService {
 
-    public void sendNewPasswordEmail(String firstName, String password, String email) throws MessagingException {
+  /*  public void sendNewPasswordEmail(String firstName, String password, String email) throws MessagingException {
         Message message = createEmail(firstName, password, email);
         SMTPTransport smtpTransport = (SMTPTransport) getEmailSession().getTransport(SIMPLE_MAIL_TRANSFER_PROTOCOL);
         smtpTransport.connect(GMAIL_SMTP_SERVER, USERNAME, PASSWORD);
         smtpTransport.sendMessage(message, message.getAllRecipients());
         smtpTransport.close();
     }
-
-    private Message createEmail(String firstName, String password, String email) throws MessagingException {
+*/
+ /*   private Message createEmail(String firstName, String password, String email) throws MessagingException {
         Message message = new MimeMessage(getEmailSession());
         message.setFrom(new InternetAddress(FROM_EMAIL));
         message.setRecipients(TO, InternetAddress.parse(email, false));
@@ -37,7 +37,7 @@ public class EmailService {
         message.saveChanges();
         return message;
     }
-
+*/
     private Session getEmailSession() {
         Properties properties = System.getProperties();
         properties.put(SMTP_HOST, GMAIL_SMTP_SERVER);
