@@ -1,11 +1,13 @@
 package com.supportportal.repository;
 
-import com.supportportal.domain.Activite;
-import com.supportportal.domain.User;
+import com.supportportal.domain.Activity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AcivityRepository extends JpaRepository<Activite, Long> {
+public interface AcivityRepository extends JpaRepository<Activity, Long> {
 
-    Activite findUserByName(String name);
+    Activity findActivityByName(String name);
 
+    void deleteByName(String name);
+
+    boolean existsByName(String activityName);
 }

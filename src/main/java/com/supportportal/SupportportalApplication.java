@@ -2,6 +2,7 @@ package com.supportportal;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,8 +17,8 @@ import java.util.Collections;
 import static com.supportportal.constant.FileConstant.USER_FOLDER;
 
 @SpringBootApplication
-@ComponentScan("com.supportportal")
-
+//@ComponentScan("com.supportportal")
+@EntityScan("com.supportportal.domain")
 public class SupportportalApplication {
 
 	public static void main(String[] args) {

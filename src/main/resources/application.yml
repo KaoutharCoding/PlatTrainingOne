@@ -3,7 +3,7 @@ jwt:
 
 
 server:
-  port: 8081
+  port: 8082
   error:
     whitelabel:
       enabled: false
@@ -16,7 +16,7 @@ spring:
   main:
     allow-bean-definition-overriding=true:
   datasource:
-    url: jdbc:mysql://localhost:3306/platapp?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT #change this to your database url
+    url: jdbc:mysql://localhost:3306/app?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT #change this to your database url
     password: Kawtar@2000 #change this to your database username
     username: ecommerceapp #change this to your database password
   jpa:
