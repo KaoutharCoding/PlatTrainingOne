@@ -1,11 +1,13 @@
 package com.supportportal.service.impl;
 
+import com.supportportal.domain.Activity;
 import com.supportportal.domain.Formation;
 import com.supportportal.exception.domain.FormationNameAlreadyExistsException;
 import com.supportportal.repository.FormationRepository;
 import com.supportportal.service.FormationService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -20,8 +22,8 @@ public class FormationServiceImpl implements FormationService {
         this.formationRepository = formationRepository;
     }
 
-    @Override
-    public Formation createFormation(Formation formation) throws FormationNameAlreadyExistsException {
+   // @Override
+   /* public Formation createFormation(Formation formation) throws FormationNameAlreadyExistsException {
         String name = formation.getName();
         Formation existingFormation = formationRepository.findByName(name);
         if (existingFormation != null) {
@@ -29,7 +31,7 @@ public class FormationServiceImpl implements FormationService {
         }
         return formationRepository.save(formation);
     }
-
+*/
 
     @Override
     public Formation createFormation(@RequestParam("name") String name,
@@ -70,8 +72,14 @@ public class FormationServiceImpl implements FormationService {
     public List<Formation> getAllFormations() {
         return formationRepository.findAll();
     }
-    public void deleteFormation(String name) {
-       formationRepository.deleteByName(name);
+
+    public String deleteFormation(String name) throws NotFoundException {
+        Formation formation = getFormationByName(name);
+        if(!formationRepository.existsByname(name) ) {
+            throw new IllegalArgumentException("Formation with name '" + name + "' doesn't exists.");
+        }
+        formationRepository.delete(formation);
+        return "Activity with name " + name + " has been deleted successfully.";
     }
     // Other methods for updating, deleting, etc.
 }

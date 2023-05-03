@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -39,7 +40,7 @@ public class FormationController extends ExceptionHandling {
             formation.setType(type);
             formation.setDuree(duree);
 
-            Formation createdFormation = formationService.createFormation(formation);
+            Formation createdFormation = formationService.createFormation(name,niveau,desc,type,duree);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdFormation);
         } catch (IllegalArgumentException | FormationNameAlreadyExistsException e) {
             ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage());
@@ -51,6 +52,9 @@ public class FormationController extends ExceptionHandling {
     @GetMapping("/{name}")
     public ResponseEntity<?> getFormationByName(@PathVariable String name) throws NotFoundException {
         Formation formation = formationService.getFormationByName(name);
+        if(formation == null){
+            return new ResponseEntity(NOT_FOUND);
+        }
         return new ResponseEntity<>(formation, OK);
     }
 
@@ -61,8 +65,8 @@ public class FormationController extends ExceptionHandling {
     }
 
     @DeleteMapping("/delete/{name}")
-    public ResponseEntity<String> deleteFormation(@PathVariable String name) {
-        formationService.deleteFormation(name);
+    public ResponseEntity<String> deleteFormation(@PathVariable String name) throws NotFoundException {
+        String response = formationService.deleteFormation(name);
         return ResponseEntity.ok("Formation with name " + name + " has been deleted successfully.");
     }
 

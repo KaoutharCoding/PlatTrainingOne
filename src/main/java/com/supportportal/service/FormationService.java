@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FormationService {
 
-    Formation createFormation(Formation formation)  ;
+  //  Formation createFormation(Formation formation)  ;
 
     Formation createFormation(@RequestParam("name") String name,
                               @RequestParam("niveau") String niveau,
@@ -22,6 +22,6 @@ public interface FormationService {
 
     List<Formation> getAllFormations();
 
-    void deleteFormation(String name);
+    String deleteFormation(String name) throws NotFoundException;
 
 }
