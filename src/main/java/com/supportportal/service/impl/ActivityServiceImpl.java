@@ -1,18 +1,16 @@
 package com.supportportal.service.impl;
 
 import com.supportportal.domain.Activity;
-import com.supportportal.exception.domain.EmailExistException;
-import com.supportportal.exception.domain.NotAnImageFileException;
-import com.supportportal.exception.domain.UserNotFoundException;
-import com.supportportal.exception.domain.UsernameExistException;
+import com.supportportal.domain.ActivityRequestDTO;
 import com.supportportal.repository.AcivityRepository;
 import com.supportportal.service.ActivityService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ActivityServiceImpl implements ActivityService {
@@ -35,8 +33,6 @@ public class ActivityServiceImpl implements ActivityService {
 
     public Activity createActivity(Activity activity) {
         String name = activity.getName();
-
-
         if(acivityRepository.existsByName(name)) {
             throw new IllegalArgumentException("Activity with name already exists: " + name);
         }
@@ -45,20 +41,27 @@ public class ActivityServiceImpl implements ActivityService {
 
 
     @Override
-    public Activity updateActivity(String name, String newName) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException, NotAnImageFileException {
-        Activity updatedActivity = findActivityByName(name);
-        updatedActivity.setName(newName);
-         acivityRepository.save(updatedActivity);
-         return updatedActivity;
+    public Activity updateActivity(String name, ActivityRequestDTO requestDTO) throws NotFoundException {
+        Activity activity = findActivityByName(name);
+        if(!acivityRepository.existsByName(name)) {
+            throw new IllegalArgumentException("Activity with this given name doesn't exists , please try again with other name");
+        }
+        activity.setName(requestDTO.getName());
+
+        return acivityRepository.save(activity);
     }
 
     @Override
-    public Activity deleteActivity(String name) throws IOException {
-        Activity activity = acivityRepository.findActivityByName(name);
-        acivityRepository.deleteByName(name);
-
-
-        return activity;
+    /**
+     * By adding the @Transactional annotation,
+     * Spring will automatically manage the
+     * transaction for the deleteActivity method.
+     */
+    @Transactional
+    public String deleteActivity(String name) {
+        Activity activity = findActivityByName(name);
+        acivityRepository.delete(activity);
+        return "Activity with name " + name + " has been deleted successfully.";
     }
 
     @Override
@@ -66,4 +69,11 @@ public class ActivityServiceImpl implements ActivityService {
         return acivityRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Activity not found"));
     }
+
+    public Activity findActivityById(Long activityId) {
+        Optional<Activity> optionalActivity = acivityRepository.findById(activityId);
+        return optionalActivity.orElse(null);
+    }
+
+
 }

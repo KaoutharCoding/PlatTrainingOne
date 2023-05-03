@@ -1,11 +1,7 @@
 package com.supportportal.service;
 
-import com.supportportal.domain.Activity;
 import com.supportportal.domain.SousActivite;
-import com.supportportal.exception.domain.EmailExistException;
-import com.supportportal.exception.domain.NotAnImageFileException;
-import com.supportportal.exception.domain.UserNotFoundException;
-import com.supportportal.exception.domain.UsernameExistException;
+import com.supportportal.domain.SubactivityRequestDTO;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,11 +15,11 @@ public interface SousActivityService {
 
 
 
-
-    SousActivite updateSousActivity(String name, SousActivite subActivity  ) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException, NotAnImageFileException;
-
-    void deleteActivity(String name) throws IOException;
-
-
     SousActivite createSubactivity(SousActivite subactivity);
+
+
+
+    SousActivite updateSousActivity(String name, Long activityId) throws IOException;
+
+    void deleteSubActivity(String name) throws IOException;
 }

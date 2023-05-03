@@ -2,18 +2,16 @@ package com.supportportal.service.impl;
 
 import com.supportportal.domain.Activity;
 import com.supportportal.domain.SousActivite;
-import com.supportportal.exception.domain.EmailExistException;
-import com.supportportal.exception.domain.NotAnImageFileException;
-import com.supportportal.exception.domain.UserNotFoundException;
-import com.supportportal.exception.domain.UsernameExistException;
+import com.supportportal.domain.SubactivityRequestDTO;
 import com.supportportal.repository.SousAcivityRepository;
+import com.supportportal.service.ActivityService;
 import com.supportportal.service.SousActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SousActivityServiceImpl implements SousActivityService {
@@ -21,8 +19,12 @@ public class SousActivityServiceImpl implements SousActivityService {
     @Autowired
     SousAcivityRepository sousAcivityRepository;
 
-    public SousActivityServiceImpl(SousAcivityRepository acivityRepository) {
-        this.sousAcivityRepository = acivityRepository;
+    @Autowired
+    private ActivityService activityService;
+
+    public SousActivityServiceImpl(SousAcivityRepository sousAcivityRepository, ActivityService activityService) {
+        this.sousAcivityRepository = sousAcivityRepository;
+        this.activityService = activityService;
     }
 
     @Override
@@ -38,22 +40,43 @@ public class SousActivityServiceImpl implements SousActivityService {
 
 
     @Override
-    public SousActivite updateSousActivity(String name, SousActivite updatedSubactivity) {
-        SousActivite subactivity = findSousActivityByName(name);
-        subactivity.setName(updatedSubactivity.getName());
+    public SousActivite createSubactivity(SousActivite subactivity) {
+        String name = subactivity.getName();
+        if(sousAcivityRepository.existsByName(name)) {
+            throw new IllegalArgumentException("SubActivity with name " + name +" already exists: " );
+        }
         return sousAcivityRepository.save(subactivity);
     }
 
     @Override
-    public void deleteActivity(String name) throws IOException {
+    public SousActivite updateSousActivity(String name, Long activityId) throws IOException {
+        SousActivite subactivity = findSousActivityByName(name);
+
+        if (subactivity == null) {
+            throw new IllegalArgumentException("SubActivity not found with name: " + name);
+        }
+
+        subactivity.setName(name);
+
+        // Retrieve the activity by its ID
+        Activity activity = activityService.findActivityById(activityId);
+        if (activity == null) {
+            throw new IllegalArgumentException("Activity not found with ID: " + activityId);
+        }
+        subactivity.setActivity(activity);
+
+        return sousAcivityRepository.save(subactivity);
+    }
+
+
+
+
+    @Override
+    public void deleteSubActivity(String name) throws IOException {
         SousActivite subActivite = findSousActivityByName(name);
         sousAcivityRepository.delete(subActivite);
 
 
     }
 
-    @Override
-    public SousActivite createSubactivity(SousActivite subactivity) {
-        return sousAcivityRepository.save(subactivity);
-    }
 }

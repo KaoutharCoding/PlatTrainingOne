@@ -1,7 +1,7 @@
 package com.supportportal.service;
 
 import com.supportportal.domain.Activity;
-import com.supportportal.exception.domain.*;
+import com.supportportal.domain.ActivityRequestDTO;
 import javassist.NotFoundException;
 
 import java.io.IOException;
@@ -17,10 +17,14 @@ public interface ActivityService {
 
     Activity createActivity(Activity activity);
 
-    Activity updateActivity(String name, String newName ) throws UserNotFoundException, UsernameExistException, EmailExistException, IOException, NotAnImageFileException;
 
-    Activity deleteActivity(String name) throws IOException;
+    Activity updateActivity(String name, ActivityRequestDTO requestDTO) throws NotFoundException;
+
+
+    String deleteActivity(String name) throws IOException;
 
 
     Activity getActivityById(Long activityId) throws NotFoundException;
+
+    Activity findActivityById(Long activityId);
 }
