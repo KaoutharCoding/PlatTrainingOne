@@ -8,7 +8,7 @@ import java.util.Optional;
 public class SousActivite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-   // @Column(name = "id", insertable = false, updatable = false)
+    @Column(insertable = false, updatable = false)
     private Long id;
 
     private String name;

@@ -9,12 +9,22 @@ import java.util.List;
 public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false,name = "activity_id")
+    @Column(name = "activity_id")
     private Long id;
 
     private String name;
+    /**
+     * In the @OneToMany mapping, you can specify cascade = CascadeType.REMOVE. This means
+     * that when an Activity is deleted,
+     * the associated Subactivity records will also be deleted.
+     *
+     * Make sure to adjust the code according to your specific entity and attribute names.
+     *
+     * With this configuration, when you delete an Activity, the associated Subactivity records will be cascaded and automatically removed from the database.
+     */
 
-    @OneToMany(mappedBy = "activity")
+    @OneToMany(mappedBy = "activity",cascade = CascadeType.REMOVE)
+
     private List<SousActivite> subActivities;
     /**
      *   // The 'mappedBy = "activity"' attribute specifies that
