@@ -23,9 +23,8 @@ public class Activity {
      * With this configuration, when you delete an Activity, the associated Subactivity records will be cascaded and automatically removed from the database.
      */
 
-    @OneToMany(mappedBy = "activity",cascade = CascadeType.REMOVE)
-
-    private List<SousActivite> subActivities;
+   // @OneToMany(mappedBy = "activity",cascade = CascadeType.REMOVE)
+    //private List<SousActivite> subActivities;
     /**
      *   // The 'mappedBy = "activity"' attribute specifies that
      *   // the 'private SubActivity subActivity ;' field in SubActivity owns the
@@ -60,6 +59,8 @@ public class Activity {
     public void setName(String name) {
         this.name = name;
     }
+
+
 
 
 }

@@ -1,7 +1,10 @@
 package com.supportportal.repository;
 
 import com.supportportal.domain.Activity;
+import com.supportportal.domain.SousActivite;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 public interface AcivityRepository extends JpaRepository<Activity, Long> {
 
@@ -10,4 +13,5 @@ public interface AcivityRepository extends JpaRepository<Activity, Long> {
     void deleteByName(String name);
 
     boolean existsByName(String activityName);
+
 }

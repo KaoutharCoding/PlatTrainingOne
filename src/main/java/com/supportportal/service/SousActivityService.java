@@ -13,13 +13,12 @@ public interface SousActivityService {
 
     SousActivite findSousActivityByName(String name);
 
-
-
-    SousActivite createSubactivity(SousActivite subactivity);
-
-
-
-    SousActivite updateSousActivity(String name, Long activityId) throws IOException;
-
     void deleteSubActivity(String name) throws IOException;
+
+
+    SousActivite updateSubactivity(String name, SubactivityRequestDTO requestDTO);
+
+    void deleteSubActivityAll() throws IOException;
+
+    SousActivite createSubactivity(SubactivityRequestDTO requestDTO);
 }

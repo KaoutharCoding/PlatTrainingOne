@@ -2,8 +2,10 @@ package com.supportportal.service.impl;
 
 import com.supportportal.domain.Activity;
 import com.supportportal.domain.ActivityRequestDTO;
+import com.supportportal.domain.SousActivite;
 import com.supportportal.repository.AcivityRepository;
 import com.supportportal.service.ActivityService;
+import com.supportportal.service.SousActivityService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ public class ActivityServiceImpl implements ActivityService {
     public List<Activity> getAllActivity() {
         return acivityRepository.findAll();
     }
+
 
     @Override
     public Activity findActivityByName(String name) {

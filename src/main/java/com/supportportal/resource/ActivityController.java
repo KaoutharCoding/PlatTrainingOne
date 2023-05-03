@@ -21,7 +21,7 @@ public class ActivityController {
 
 
     @PostMapping("/add")
-        public ResponseEntity<?> createActivity(@RequestBody ActivityRequestDTO requestDTO) {
+        public ResponseEntity<?> createActivity(@RequestParam ActivityRequestDTO requestDTO) {
         try {
             Activity activity = new Activity();
             activity.setName(requestDTO.getName());
@@ -34,7 +34,7 @@ public class ActivityController {
     }
 
         @PutMapping("/update/{name}")
-        public ResponseEntity<Activity> updateActivity(@PathVariable String name, @RequestBody ActivityRequestDTO requestDTO) throws NotFoundException {
+        public ResponseEntity<Activity> updateActivity(@PathVariable String name, @RequestParam ActivityRequestDTO requestDTO) throws NotFoundException {
             Activity updatedActivity = activityService.updateActivity(name, requestDTO);
             return ResponseEntity.ok(updatedActivity);
         }

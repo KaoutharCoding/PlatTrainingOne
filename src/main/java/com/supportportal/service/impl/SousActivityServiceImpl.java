@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SousActivityServiceImpl implements SousActivityService {
@@ -39,35 +38,18 @@ public class SousActivityServiceImpl implements SousActivityService {
 
 
 
-    @Override
-    public SousActivite createSubactivity(SousActivite subactivity) {
-        String name = subactivity.getName();
-        if(sousAcivityRepository.existsByName(name)) {
-            throw new IllegalArgumentException("SubActivity with name " + name +" already exists: " );
-        }
-        return sousAcivityRepository.save(subactivity);
-    }
-
-    @Override
-    public SousActivite updateSousActivity(String name, Long activityId) throws IOException {
-        SousActivite subactivity = findSousActivityByName(name);
+    public SousActivite updateSubactivity(String subactivityName, SubactivityRequestDTO requestDTO) {
+        SousActivite subactivity = sousAcivityRepository.findSousActivityByName(subactivityName);
 
         if (subactivity == null) {
-            throw new IllegalArgumentException("SubActivity not found with name: " + name);
+            throw new IllegalArgumentException("Subactivity not found with name: " + subactivityName);
         }
 
-        subactivity.setName(name);
-
-        // Retrieve the activity by its ID
-        Activity activity = activityService.findActivityById(activityId);
-        if (activity == null) {
-            throw new IllegalArgumentException("Activity not found with ID: " + activityId);
-        }
-        subactivity.setActivity(activity);
+        subactivity.setName(requestDTO.getName());
+        // Update other properties of subactivity if needed
 
         return sousAcivityRepository.save(subactivity);
     }
-
 
 
 
@@ -75,8 +57,35 @@ public class SousActivityServiceImpl implements SousActivityService {
     public void deleteSubActivity(String name) throws IOException {
         SousActivite subActivite = findSousActivityByName(name);
         sousAcivityRepository.delete(subActivite);
-
-
     }
+
+    @Override
+    public void deleteSubActivityAll() throws IOException {
+        sousAcivityRepository.deleteAll();
+    }
+
+    public SousActivite createSubactivity(SubactivityRequestDTO requestDTO) {
+        String activityName = requestDTO.getActivityName();
+        String subactivityName = requestDTO.getName();
+
+        Activity activity = activityService.findActivityByName(activityName);
+
+        if (activity == null) {
+            throw new IllegalArgumentException("Activity not found with name: " + activityName);
+        }
+        // Check if a subactivity with the same name already exists
+        if (sousAcivityRepository.existsByName(subactivityName)) {
+            throw new IllegalArgumentException("Subactivity with name '" + subactivityName + "' already exists.");
+        }
+
+        SousActivite subactivity = new SousActivite();
+        subactivity.setName(subactivityName);
+        subactivity.setActivity(activity);
+        // Set other properties of the subactivity if needed
+
+        return sousAcivityRepository.save(subactivity);
+    }
+
+
 
 }

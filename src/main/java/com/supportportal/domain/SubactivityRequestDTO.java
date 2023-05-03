@@ -2,15 +2,18 @@ package com.supportportal.domain;
 
 public class SubactivityRequestDTO {
     private String name;
-    private Long activityId;
+  //  private Long activityId;
+    private String activityName;
+
 
 
     public SubactivityRequestDTO() {
     }
 
-    public SubactivityRequestDTO(String name, Long activityId) {
+    public SubactivityRequestDTO(String name,String activityName) {
         this.name = name;
-        this.activityId = activityId;
+        //this.activityId = activityId;
+        this.activityName=activityName;
     }
 
     public String getName() {
@@ -21,11 +24,11 @@ public class SubactivityRequestDTO {
         this.name = name;
     }
 
-    public Long getActivityId() {
-        return activityId;
+    public String getActivityName() {
+        return activityName;
     }
 
-    public void setActivityId(Long activityId) {
-        this.activityId = activityId;
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
     }
 }
