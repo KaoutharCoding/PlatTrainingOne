@@ -21,14 +21,14 @@ public class Formation {
     // Constructors, getters, and setters
 
 
-    public Formation(Long id, String name, String niveau, String description, String type, String duree, List<Course> courses) {
+    public Formation(Long id, String name, String niveau, String description, String type, String duree) {
         this.id = id;
         this.name = name;
         this.niveau = niveau;
         this.description = description;
         this.type = type;
         this.duree = duree;
-        this.courses = courses;
+       // this.courses = courses;
     }
 
     public Formation() {
@@ -80,14 +80,6 @@ public class Formation {
 
     public void setDuree(String duree) {
         this.duree = duree;
-    }
-
-    public List<Course> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
     }
 
 

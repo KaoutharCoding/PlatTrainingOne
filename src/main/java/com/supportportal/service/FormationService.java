@@ -24,4 +24,7 @@ public interface FormationService {
 
     String deleteFormation(String name) throws NotFoundException;
 
+
+    Formation updateFormation(String name, String newName, String niveau, String desc, String type, String duree) throws NotFoundException;
+
 }

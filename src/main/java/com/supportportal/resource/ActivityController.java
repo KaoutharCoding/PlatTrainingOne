@@ -81,7 +81,7 @@ public class ActivityController {
 
         activityService.deleteActivity(name);
         String message =  "Activity with ID " + name + " has been deleted successfully.";
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+        return ResponseEntity.status(HttpStatus.FOUND).body(message);
 
     }
     }

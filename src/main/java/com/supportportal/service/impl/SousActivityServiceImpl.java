@@ -37,15 +37,15 @@ public class SousActivityServiceImpl implements SousActivityService {
     }
 
 
-
-    public SousActivite updateSubactivity(String subactivityName, SubactivityRequestDTO requestDTO) {
+    @Override
+    public SousActivite updateSubactivity(String subactivityName, String newName) {
         SousActivite subactivity = sousAcivityRepository.findSousActivityByName(subactivityName);
 
         if (subactivity == null) {
             throw new IllegalArgumentException("Subactivity not found with name: " + subactivityName);
         }
 
-        subactivity.setName(requestDTO.getName());
+        subactivity.setName(newName);
         // Update other properties of subactivity if needed
 
         return sousAcivityRepository.save(subactivity);
@@ -63,7 +63,7 @@ public class SousActivityServiceImpl implements SousActivityService {
     public void deleteSubActivityAll() throws IOException {
         sousAcivityRepository.deleteAll();
     }
-
+@Override
     public SousActivite createSubactivity(SubactivityRequestDTO requestDTO) {
         String activityName = requestDTO.getActivityName();
         String subactivityName = requestDTO.getName();

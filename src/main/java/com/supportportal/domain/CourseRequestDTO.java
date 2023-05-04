@@ -1,60 +1,37 @@
 package com.supportportal.domain;
 
-import javax.persistence.*;
-
-@Entity
-public class Course {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "course_name")
+public class CourseRequestDTO {
     private String name;
-
     private String niveau;
-    private String description;
+    private String desc;
     private String type;
     private String duree;
     private String etat;
     private String quiz;
     private int ordre;
-
-    @OneToOne
-    @JoinColumn(name = "formation_id")
-    private Formation formation;
+    private String formationName;
 
     // Constructors, getters, and setters
+    // ...
 
-
-    public Course() {
-    }
-
-    public Course(Long id, String name, String niveau, String description, String type, String duree, String etat, String quiz, int ordre, Formation formation) {
-        this.id = id;
+    public CourseRequestDTO(){}
+    public CourseRequestDTO(String name, String niveau, String desc, String type, String duree, String etat, String quiz, int ordre, String formationName) {
         this.name = name;
         this.niveau = niveau;
-        this.description = description;
+        this.desc = desc;
         this.type = type;
         this.duree = duree;
         this.etat = etat;
         this.quiz = quiz;
         this.ordre = ordre;
-        this.formation = formation;
+        this.formationName = formationName;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCourseName() {
+    public String getName() {
         return name;
     }
 
-    public void setCourseName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -66,12 +43,12 @@ public class Course {
         this.niveau = niveau;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDesc() {
+        return desc;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     public String getType() {
@@ -114,11 +91,12 @@ public class Course {
         this.ordre = ordre;
     }
 
-    public Formation getFormation() {
-        return formation;
+    public String getFormationName() {
+        return formationName;
     }
 
-    public void setFormation(Formation formation) {
-        this.formation = formation;
+    public void setFormationName(String formationName) {
+        this.formationName = formationName;
     }
 }
+

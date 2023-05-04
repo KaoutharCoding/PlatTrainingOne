@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/formations")
@@ -31,20 +31,19 @@ public class FormationController extends ExceptionHandling {
                                                      @RequestParam("desc") String desc,
                                                      @RequestParam("type") String type,
                                                      @RequestParam("duree") String duree)  {
-        Formation formation = null;
         try {
-            formation = new Formation();
+            Formation formation=new Formation();
             formation.setName(name);
             formation.setNiveau(niveau);
             formation.setDescription(desc);
             formation.setType(type);
             formation.setDuree(duree);
-
             Formation createdFormation = formationService.createFormation(name,niveau,desc,type,duree);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdFormation);
-        } catch (IllegalArgumentException | FormationNameAlreadyExistsException e) {
-            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+
+        } catch (IllegalArgumentException e) {
+            ErrorResponse errorResponse = new ErrorResponse(BAD_REQUEST.value(), e.getMessage());
+            return ResponseEntity.status(BAD_REQUEST).body(errorResponse);
         }
     }
 
@@ -65,9 +64,31 @@ public class FormationController extends ExceptionHandling {
     }
 
     @DeleteMapping("/delete/{name}")
-    public ResponseEntity<String> deleteFormation(@PathVariable String name) throws NotFoundException {
-        String response = formationService.deleteFormation(name);
-        return ResponseEntity.ok("Formation with name " + name + " has been deleted successfully.");
+    public ResponseEntity<?> deleteFormation(@PathVariable String name) throws NotFoundException {
+        Formation formation = formationService.getFormationByName(name);
+        if (formation == null) {
+            throw new IllegalArgumentException("Activity not found with name: " + name);
+        }
+        formationService.deleteFormation(name);
+        String message =  "Formation with name " + name + " has been deleted successfully.";
+        return ResponseEntity.status(FOUND).body(message);    }
+
+
+    @PutMapping("/update/{name}")
+    public ResponseEntity<Formation> updateFormation(@PathVariable String name,
+                                                     @RequestParam("newName") String newName,
+                                                     @RequestParam("niveau") String niveau,
+                                                     @RequestParam("desc") String desc,
+                                                     @RequestParam("type") String type,
+                                                     @RequestParam("duree") String duree) {
+        try {
+            Formation updatedFormation = formationService.updateFormation(name, newName,niveau,desc,type,duree);
+            return ResponseEntity.ok(updatedFormation);
+        }
+        catch (NotFoundException e) {
+            throw new ResponseStatusException(NOT_FOUND);
+        }
     }
+
 
 }
