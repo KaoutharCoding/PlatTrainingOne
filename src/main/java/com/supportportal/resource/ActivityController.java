@@ -19,6 +19,10 @@ public class ActivityController {
     @Autowired
     private ActivityService activityService;
 
+    @GetMapping("/{activityName}")
+    public Activity getActivityWithRelatedActivities(@PathVariable String activityName) {
+        return activityService.getActivityWithRelatedActivities(activityName);
+    }
 
     @PostMapping("/add")
         public ResponseEntity<?> createActivity(@RequestParam ActivityRequestDTO requestDTO) {
@@ -64,12 +68,12 @@ public class ActivityController {
 
 
     // GET /activities/{id} - Get an activity by ID
-    @GetMapping("/{name}")
-    public ResponseEntity<Activity> getActivityByName(@PathVariable String name) throws IOException {
-        Activity activity = activityService.findActivityByName(name);
-        return ResponseEntity.ok(activity);
+  //  @GetMapping("/{name}")
+    //public ResponseEntity<Activity> getActivityByName(@PathVariable String name) throws IOException {
+      //  Activity activity = activityService.findActivityByName(name);
+        //return ResponseEntity.ok(activity);
 
-    }
+    //}
 
     @DeleteMapping("/delete/{name}")
     public ResponseEntity<?> deleteActivity(@PathVariable String name) throws IOException {

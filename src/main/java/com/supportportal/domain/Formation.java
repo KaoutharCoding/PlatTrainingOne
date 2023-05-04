@@ -15,7 +15,7 @@ public class Formation {
     private String type;
     private String duree;
 
-    @OneToMany(mappedBy = "formation", cascade = CascadeType.ALL)
+   @OneToMany(mappedBy = "formation", cascade = CascadeType.ALL)
     private List<Course> courses;
 
     // Constructors, getters, and setters

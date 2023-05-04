@@ -19,6 +19,9 @@ public class Course {
     private String quiz;
     private int ordre;
 
+    @Transient
+    private String formationName;
+
     @OneToOne
     @JoinColumn(name = "formation_id")
     private Formation formation;
@@ -120,5 +123,21 @@ public class Course {
 
     public void setFormation(Formation formation) {
         this.formation = formation;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFormationName() {
+        return formationName;
+    }
+
+    public void setFormationName(String formationName) {
+        this.formationName = formationName;
     }
 }

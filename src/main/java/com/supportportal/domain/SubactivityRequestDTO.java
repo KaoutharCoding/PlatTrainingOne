@@ -1,11 +1,12 @@
 package com.supportportal.domain;
 
+import java.beans.Transient;
+
 public class SubactivityRequestDTO {
     private String name;
   //  private Long activityId;
-    private String activityName;
 
-
+  private String activityName;
 
     public SubactivityRequestDTO() {
     }

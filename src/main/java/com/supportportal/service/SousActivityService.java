@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface SousActivityService {
 
+    SousActivite getSubactivityWithActivities();
 
     List<SousActivite> getAllSousActivity();
 
@@ -23,4 +24,11 @@ public interface SousActivityService {
     void deleteSubActivityAll() throws IOException;
 
     SousActivite createSubactivity(SubactivityRequestDTO requestDTO);
+
+
+    List<SousActivite> findAllUsersWithActivityName();
+
+    String findActivityNameById(Long activityId);
+
+    List<SousActivite> findAllActivitiesWithActivityName();
 }

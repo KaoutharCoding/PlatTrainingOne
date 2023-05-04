@@ -1,5 +1,7 @@
 package com.supportportal.domain;
 
+import javax.persistence.Transient;
+
 public class CourseRequestDTO {
     private String name;
     private String niveau;
@@ -9,6 +11,7 @@ public class CourseRequestDTO {
     private String etat;
     private String quiz;
     private int ordre;
+    @Transient
     private String formationName;
 
     // Constructors, getters, and setters

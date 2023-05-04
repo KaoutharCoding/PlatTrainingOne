@@ -9,6 +9,10 @@ import com.supportportal.service.SousActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.io.IOException;
 import java.util.List;
 
@@ -26,6 +30,26 @@ public class SousActivityServiceImpl implements SousActivityService {
         this.activityService = activityService;
     }
 
+      //  @PersistenceContext
+        //private EntityManager entityManager;
+
+    @Override
+    public SousActivite getSubactivityWithActivities() {
+        return null;
+    }
+
+    /*@Override
+        public SousActivite getSubactivityWithActivities() {
+            String query = "SELECT s FROM SousActivite s LEFT JOIN FETCH s.activity WHERE s.name = :subactivityName";
+            TypedQuery<SousActivite> typedQuery = entityManager.createQuery(query, SousActivite.class);
+            typedQuery.setParameter("activityName", activityName);
+            try {
+                return typedQuery.getSingleResult();
+            } catch (NoResultException e) {
+                return null; // Return null if no subactivity with the given name is found
+            }
+        }
+    */
     @Override
     public List<SousActivite> getAllSousActivity() {
         return sousAcivityRepository.findAll();
@@ -87,5 +111,43 @@ public class SousActivityServiceImpl implements SousActivityService {
     }
 
 
+
+    @Override
+    public List<SousActivite> findAllUsersWithActivityName() {
+        List<SousActivite> sousActivite = getAllSousActivity();
+        for (SousActivite sub : sousActivite) {
+            if (sub.getActivity() != null) {
+                String activityName = findActivityNameById(sub.getActivity().getId());
+                sub.setActivityName(activityName);
+            }
+        }
+        return sousActivite;
+    }
+
+    @PersistenceContext
+    private EntityManager entityManager;
+    @Override
+    public String findActivityNameById(Long activityId) {
+        String query = "SELECT a.name FROM Activity a WHERE a.id = :activityId";
+        TypedQuery<String> typedQuery = entityManager.createQuery(query, String.class);
+        typedQuery.setParameter("activityId", activityId);
+        try {
+            return typedQuery.getSingleResult();
+        } catch (NoResultException e) {
+            return null; // Return null if no activity with the given ID is found
+        }
+    }
+
+    @Override
+    public List<SousActivite> findAllActivitiesWithActivityName() {
+        List<SousActivite> sousActivites = getAllSousActivity();
+        for (SousActivite sub : sousActivites) {
+            if (sub.getActivity() != null) {
+                String activityName = findActivityNameById(sub.getActivity().getId());
+                sub.setActivityName(activityName);
+            }
+        }
+        return sousActivites;
+    }
 
 }

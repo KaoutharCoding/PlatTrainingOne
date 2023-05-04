@@ -2,14 +2,16 @@ package com.supportportal.service.impl;
 
 import com.supportportal.domain.Activity;
 import com.supportportal.domain.ActivityRequestDTO;
-import com.supportportal.domain.SousActivite;
 import com.supportportal.repository.AcivityRepository;
 import com.supportportal.service.ActivityService;
-import com.supportportal.service.SousActivityService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +24,25 @@ public class ActivityServiceImpl implements ActivityService {
     public ActivityServiceImpl(AcivityRepository acivityRepository) {
         this.acivityRepository = acivityRepository;
     }
+    @PersistenceContext
+    private EntityManager entityManager;
+@Override
+    public Activity getActivityWithRelatedActivities(String activityName) {
+        String query = "SELECT a FROM Activity a LEFT JOIN FETCH a.subActivities WHERE a.name = :activityName";
+        TypedQuery<Activity> typedQuery = entityManager.createQuery(query, Activity.class);
+        typedQuery.setParameter("activityName", activityName);
+        try {
+            return typedQuery.getSingleResult();
+        } catch (NoResultException e) {
+            return null; // Return null if no activity with the given name is found
+        }
+    }
+
+   /* @Override
+    public Activity getActivityWithRelatedActivities(String activityName) {
+        return acivityRepository.getActivityWithRelatedActivities(activityName);
+    }
+    */
 
     @Override
     public List<Activity> getAllActivity() {

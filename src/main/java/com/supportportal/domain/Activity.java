@@ -5,7 +5,7 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "activity")
+@Table(name = "Activity")
 public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +31,8 @@ public class Activity {
      *   // relationship (i.e. contains the foreign key for the query to
      *   // find all phones for an employee.
      */
-  //  @OneToMany(mappedBy = "activity")
-    //private List<SousActivite> subActivities;
+   @OneToMany(mappedBy = "activity")
+    private List<SousActivite> subActivities;
 
 
 
@@ -59,6 +59,7 @@ public class Activity {
     public void setName(String name) {
         this.name = name;
     }
+
 
 
 

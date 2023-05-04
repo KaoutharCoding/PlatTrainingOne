@@ -69,6 +69,9 @@ public class SousActivite {
     @JoinColumn(name = "activity_id")
     private Activity activity;
 
+@Transient
+    private String activityName;
+
     public SousActivite() {}
 
     public SousActivite(Long id, String name, Activity activity) {
@@ -101,8 +104,18 @@ public class SousActivite {
         this.activity = activity;
     }
 
+    public String getActivityName() {
+        return activityName;
+    }
+
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
+    }
+
     //this.activity = activity;
     }
+
+
 
 
 

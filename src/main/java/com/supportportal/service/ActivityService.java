@@ -10,6 +10,8 @@ import java.util.List;
 public interface ActivityService {
 
 
+    Activity getActivityWithRelatedActivities(String activityId);
+
     List<Activity> getAllActivity();
 
     Activity findActivityByName(String name);
