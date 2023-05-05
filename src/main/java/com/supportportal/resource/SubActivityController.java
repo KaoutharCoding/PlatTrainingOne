@@ -1,12 +1,10 @@
 package com.supportportal.resource;
 
-import com.supportportal.domain.Activity;
 import com.supportportal.domain.SousActivite;
 import com.supportportal.domain.SubactivityRequestDTO;
 
 import com.supportportal.service.ActivityService;
 import com.supportportal.service.SousActivityService;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,28 +23,24 @@ public class SubActivityController {
     private ActivityService activityService;
 
     // GET /subactivities - Get all subactivities
-    @GetMapping
+    @GetMapping("/list")
     public List<SousActivite> getAllSubActivities() {
         return subactivityService.getAllSousActivity();
     }
 
-    // POST /subactivities - Create a new subactivity
-    @PostMapping("/add")
-    public ResponseEntity<SousActivite> createSubactivity(@RequestBody SubactivityRequestDTO requestDTO) throws NotFoundException {
-        SousActivite subactivity = new SousActivite();
-        subactivity.setName(requestDTO.getName());
-
-        Activity activity = activityService.getActivityById(requestDTO.getActivityId());
-        subactivity.setActivity(activity);
-
-        SousActivite createdSubactivity = subactivityService.createSubactivity(subactivity);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdSubactivity);
+    @GetMapping("/subactivitues-with-activity-name")
+    public List<SousActivite> getUsersWithActivityName() {
+        return subactivityService.findAllActivitiesWithActivityName();
     }
-    @PutMapping("/update/{name}")
-    public ResponseEntity<?> updateSubActivity(@PathVariable String name, @RequestBody SubactivityRequestDTO requestDTO) throws IOException {
+    // POST /subactivities - Create a new subactivity
+    @PutMapping("/update")
+    public ResponseEntity<?> updateSubactivity(
+            @RequestParam String name,
+            @RequestParam String newName
+    ) {
         try {
-            SousActivite updatedSubActivity = subactivityService.updateSousActivity(name, requestDTO.getActivityId());
-            return ResponseEntity.ok(updatedSubActivity);
+            SousActivite updatedSubactivity = subactivityService.updateSubactivity(name, newName);
+            return ResponseEntity.ok(updatedSubactivity);
         } catch (IllegalArgumentException e) {
             String errorMessage = e.getMessage();
             return ResponseEntity.badRequest().body(errorMessage);
@@ -57,9 +51,14 @@ public class SubActivityController {
     }
 
     // GET /subactivities/{id} - Get a subactivity by ID
-    @GetMapping("/{name}")
+   /* @GetMapping("/{name}")
     public SousActivite getSubActivityById(@PathVariable String name) {
         return subactivityService.findSousActivityByName(name);
+    }
+*/
+    @GetMapping("/all")
+    public SousActivite getSubactivityWithActivities() {
+        return subactivityService.getSubactivityWithActivities();
     }
 
     @GetMapping("/")
@@ -81,6 +80,37 @@ public class SubActivityController {
         String message = "SubActivity with name " + name + " has been deleted successfully.";
         return ResponseEntity.ok(message);
     }
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteSubActivityAll() throws IOException {
+
+        // Perform the deletion of subactivity here
+        subactivityService.deleteSubActivityAll();
+
+
+        String message = "all SubActivity  has been deleted successfully.";
+        return ResponseEntity.ok(message);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createSubactivity(
+            @RequestParam("activityName") String activityName,
+            @RequestParam("subactivityName") String subactivityName) {
+        try {
+            SubactivityRequestDTO requestDTO = new SubactivityRequestDTO();
+            requestDTO.setActivityName(activityName);
+            requestDTO.setName(subactivityName);
+
+            SousActivite createdSubactivity = subactivityService.createSubactivity(requestDTO);
+            return ResponseEntity.ok(createdSubactivity);
+        } catch (IllegalArgumentException e) {
+            String errorMessage = e.getMessage();
+            return ResponseEntity.badRequest().body(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Failed to create the subactivity.";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
+        }
+    }
+
 
 }
 
