@@ -108,6 +108,8 @@ public class FormationServiceImpl implements FormationService {
                 formation.setSubActivityName(activityName);
                // findAllActivitiesWithActivityName();
                 formation.setSousActivite(formation.getSousActivite());
+                formation.setActivityName(formation.getSousActivite().getActivityName());
+
             }
         }
         return formations;
@@ -139,6 +141,7 @@ public class FormationServiceImpl implements FormationService {
 
         existingFormation.setSousActivite(newSousActivite); // set the new SousActivite object
         newSousActivite.setActivityName(a.getName());
+        existingFormation.setActivityName(existingFormation.getActivityName());
         existingFormation.setSubActivityName(newSubActiviteName);
         formationRepository.save(existingFormation);
         return existingFormation;

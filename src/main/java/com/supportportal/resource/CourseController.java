@@ -30,7 +30,7 @@ public class CourseController {
     private FormationRepository formationRepository;
 
     @PostMapping("/upload")
-    public ResponseEntity<Course> uploadCourseFile(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<Course> uploadCourseFile(@RequestParam("file")  MultipartFile file,
                                                    @RequestParam("name") String name,
                                                    @RequestParam("niveau") String niveau,
                                                    @RequestParam("description") String description,
@@ -55,13 +55,6 @@ public class CourseController {
                 .body(course.getFileData());
     }
 
-    @GetMapping("/open/{courseName}")
-    public MultipartFile  openFile(@PathVariable("courseName") String courseName) throws NotFoundException {
-        Course c =courseService.getCourseByName(courseName);
-          courseService.openURL(c.getFileUrl());
-          return openFile(c.getFileUrl());
-
-    }
 
     @PostMapping("/update/{courseName}")
     public ResponseEntity<Course> updateCourse(@RequestParam("name") String name,

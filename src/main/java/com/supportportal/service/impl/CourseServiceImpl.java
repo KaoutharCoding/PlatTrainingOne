@@ -2,17 +2,21 @@ package com.supportportal.service.impl;
 
 import com.supportportal.domain.Course;
 import com.supportportal.domain.Formation;
+import com.supportportal.domain.User;
 import com.supportportal.exception.domain.NotAnImageFileException;
 import com.supportportal.repository.CourseRepository;
 import com.supportportal.repository.FormationRepository;
 import com.supportportal.service.CourseService;
 import javassist.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.*;
 import java.awt.*;
@@ -22,8 +26,17 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+import static com.supportportal.constant.FileConstant.*;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.springframework.http.MediaType.*;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -31,6 +44,9 @@ public class CourseServiceImpl implements CourseService {
     private CourseRepository courseRepository;
     @Autowired
     private FormationRepository formationRepository;
+
+    private Logger LOGGER = LoggerFactory.getLogger(getClass());
+
 
     public CourseServiceImpl(CourseRepository courseRepository, FormationRepository formationRepository) {
         this.courseRepository = courseRepository;
@@ -153,7 +169,7 @@ public List<Course> findAllCoursesWithFormationName() {
         // Save the file to the upload directory
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
       //  Path filePath = Paths.get(uploadDir, fileName);
-      //  Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        //Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         // Get the file bytes
         byte[] fileBytes;
         try {
@@ -162,81 +178,55 @@ public List<Course> findAllCoursesWithFormationName() {
             throw new RuntimeException("Failed to read file data", e);
         }
         // Create the course object
-        Course course = new Course();
+      //  Course course = new Course();
 
 
-        course.setCourseName(name);
-        course.setNiveau(niveau);
-        course.setDescription(description);
-        course.setType(type);
-        course.setDuree(duree);
-        course.setEtat(etat);
-        course.setQuiz(quiz);
-        course.setOrdre(ordre);
-        course.setFormation(formation);
-        course.setFormationName(formationName);
-
-        course.setFileData(fileBytes);
+        Course course = new Course(name, niveau, description, type, duree, etat, quiz, ordre, file ,formation);
+       String fileNameSub  = file.getOriginalFilename().substring(0,file.getOriginalFilename().lastIndexOf('.'));
         course.setFileType(file.getContentType());
-        course.setOriginalFilename(file.getOriginalFilename().substring(0,file.getOriginalFilename().lastIndexOf('.')));
-        saveFileAndGetUrl(file);
-        String serverUrl = "http://localhost:8082/courses";
-        createFileUrl(fileName,serverUrl);
-        String newUrl = createFileUrl(fileName, serverUrl);
-        URL fileUrl = createUrlFromFile(newUrl);
-      //  course.setFileUrl(fileUrl);
-
-        // Set the file URL in a separate variable
-       /* String fileUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/files/")
-                .path(fileName)
-                .toUriString();
-*/
-        // Save the course in the database
-        //  Course savedCourse = courseRepository.save(course);
-
-        // Return the saved course and the file URL
-        //   savedCourse.setFileUrl(fileUrl);
-        courseRepository.save(course);
+        course.setFileData(file.getBytes());
+        course.setOriginalFilename(fileNameSub);
+        course.setFormationName(formationName);
+        course.setFormation(formation);
 
 
         return  course;
 
     }
 
+    private void saveProfileImage(Course user, MultipartFile profileImage) throws IOException, NotAnImageFileException {
+        if (profileImage != null) {
+            if(!Arrays.asList(IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE, IMAGE_GIF_VALUE).contains(profileImage.getContentType())) {
+                throw new NotAnImageFileException(profileImage.getOriginalFilename() + NOT_AN_IMAGE_FILE);
+            }
+            Path userFolder = Paths.get(USER_FOLDER + user.getCourseName()).toAbsolutePath().normalize();
+            if(!Files.exists(userFolder)) {
+                Files.createDirectories(userFolder);
+                LOGGER.info(DIRECTORY_CREATED + userFolder);
+            }
+            Files.deleteIfExists(Paths.get(userFolder + user.getCourseName() + DOT + JPG_EXTENSION));
+            Files.copy(profileImage.getInputStream(), userFolder.resolve(user.getCourseName() + DOT + JPG_EXTENSION), REPLACE_EXISTING);
+            user.setFileUrl(setProfileImageUrl(user.getCourseName()));
+            courseRepository.save(user);
+            LOGGER.info(FILE_SAVED_IN_FILE_SYSTEM + profileImage.getOriginalFilename());
+        }
+    }
+
+    private String getTemporaryProfileImageUrl(String username) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path(DEFAULT_USER_IMAGE_PATH + username).toUriString();
+    }
+
+    private String setProfileImageUrl(String username) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path(USER_IMAGE_PATH + username + FORWARD_SLASH
+                + username + DOT + JPG_EXTENSION).toUriString();
+    }
+
+
     public static URL createUrlFromFile(String filePath) throws MalformedURLException, MalformedURLException {
         File file = new File(filePath);
         return file.toURI().toURL();
     }
 
-    @Override
-    public String createFileUrl(String fileName, String serverUrl) {
-        return serverUrl + "/files/" + fileName;
+
     }
 
-    public String saveFileAndGetUrl(MultipartFile file) throws IOException {
-        // Save the file to a local file system or a cloud-based storage service
-        // Here's an example of saving to a local file system
-        String fileName = UUID.randomUUID().toString() + "." + file.getOriginalFilename()/*.split("\\.")[1]*/;
-        String filePath = "/C:/Users//kababi//Downloads//courses/" + fileName;
-        File dest = new File(filePath);
-        file.transferTo(dest);
-
-        // Generate the file URL
-        String fileUrl = "http://localhost:8082/courses/files/" + fileName;
-
-        return fileUrl;
-    }
-
-    @Override
-    public void openURL(String url) {
-        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-            try {
-                Desktop.getDesktop().browse(new URI(url));
-            } catch (IOException | URISyntaxException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-    }}

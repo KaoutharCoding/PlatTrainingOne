@@ -1,11 +1,13 @@
 package com.supportportal.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class Course {
+public class Course implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,7 +25,7 @@ public class Course {
 
     @Transient
     private String formationName;
-
+    @JsonIgnore
     @Lob
     @Column(name = "file_data")
     private byte[] fileData;
@@ -34,12 +36,10 @@ public class Course {
     private String fileType;
     @Transient
     private MultipartFile file;
-   // @Transient
     @Column(name = "file_url")
-
     private String fileUrl;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "formation_id")
     private Formation formation;
 
@@ -65,6 +65,19 @@ public class Course {
         this.fileType = fileType;
         this.file = file;
         this.fileUrl = fileUrl;
+        this.formation = formation;
+    }
+
+    public Course(String name, String niveau, String description, String type, String duree, String etat, String quiz, int ordre, MultipartFile file, Formation formation) {
+        this.name = name;
+        this.niveau = niveau;
+        this.description = description;
+        this.type = type;
+        this.duree = duree;
+        this.etat = etat;
+        this.quiz = quiz;
+        this.ordre = ordre;
+        this.file = file;
         this.formation = formation;
     }
 
@@ -177,11 +190,11 @@ public class Course {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.formation.setName(name);
     }
 
     public String getFormationName() {
-        return formationName;
+        return this.formation.getName();
     }
 
     public void setFormationName(String formationName) {

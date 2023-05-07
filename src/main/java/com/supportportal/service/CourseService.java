@@ -26,8 +26,6 @@ public interface CourseService {
 
     String deleteCourse(String courseName) throws NotFoundException;
 
-    String createFileUrl(String fileName, String serverUrl);
 
-    void openURL(String url);
 }
 
