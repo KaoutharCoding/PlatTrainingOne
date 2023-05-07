@@ -2,7 +2,6 @@ package com.supportportal.service.impl;
 
 import com.supportportal.domain.Activity;
 import com.supportportal.domain.SousActivite;
-import com.supportportal.domain.SubactivityRequestDTO;
 import com.supportportal.repository.SousAcivityRepository;
 import com.supportportal.service.ActivityService;
 import com.supportportal.service.SousActivityService;
@@ -33,23 +32,25 @@ public class SousActivityServiceImpl implements SousActivityService {
       //  @PersistenceContext
         //private EntityManager entityManager;
 
-    @Override
-    public SousActivite getSubactivityWithActivities() {
-        return null;
-    }
 
-    /*@Override
-        public SousActivite getSubactivityWithActivities() {
+
+    @Override
+        public SousActivite getSubactivityWithActivities(String subactivityName) {
             String query = "SELECT s FROM SousActivite s LEFT JOIN FETCH s.activity WHERE s.name = :subactivityName";
             TypedQuery<SousActivite> typedQuery = entityManager.createQuery(query, SousActivite.class);
-            typedQuery.setParameter("activityName", activityName);
+            typedQuery.setParameter("subactivityName", subactivityName);
             try {
                 return typedQuery.getSingleResult();
             } catch (NoResultException e) {
                 return null; // Return null if no subactivity with the given name is found
             }
         }
-    */
+
+    @Override
+    public SousActivite getSubactivityWithActivities() {
+        return null;
+    }
+
     @Override
     public List<SousActivite> getAllSousActivity() {
         return sousAcivityRepository.findAll();
@@ -88,7 +89,7 @@ public class SousActivityServiceImpl implements SousActivityService {
         sousAcivityRepository.deleteAll();
     }
 @Override
-    public SousActivite createSubactivity(SubactivityRequestDTO requestDTO) {
+    public SousActivite createSubactivity(SousActivite requestDTO) {
         String activityName = requestDTO.getActivityName();
         String subactivityName = requestDTO.getName();
 
@@ -106,7 +107,7 @@ public class SousActivityServiceImpl implements SousActivityService {
         subactivity.setName(subactivityName);
         subactivity.setActivity(activity);
         // Set other properties of the subactivity if needed
-
+        subactivity.setActivityName(activityName);
         return sousAcivityRepository.save(subactivity);
     }
 

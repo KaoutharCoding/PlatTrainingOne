@@ -17,6 +17,13 @@ public class Formation {
 
    @OneToMany(mappedBy = "formation", cascade = CascadeType.ALL)
     private List<Course> courses;
+    @ManyToOne()
+    @JoinColumn(name = "sous_activity_id")
+    private SousActivite sousActivite;
+
+
+    @Transient
+   private String subActivityName;
 
     // Constructors, getters, and setters
 
@@ -32,6 +39,14 @@ public class Formation {
     }
 
     public Formation() {
+    }
+
+    public String getSubActivityName() {
+        return subActivityName;
+    }
+
+    public void setSubActivityName(String subActivityName) {
+        this.subActivityName = subActivityName;
     }
 
     public Long getId() {
@@ -82,6 +97,11 @@ public class Formation {
         this.duree = duree;
     }
 
+    public SousActivite getSousActivite() {
+        return sousActivite;
+    }
 
-
+    public void setSousActivite(SousActivite sousActivite) {
+        this.sousActivite = sousActivite;
+    }
 }

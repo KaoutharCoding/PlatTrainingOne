@@ -96,7 +96,7 @@ public class SubActivityController {
             @RequestParam("activityName") String activityName,
             @RequestParam("subactivityName") String subactivityName) {
         try {
-            SubactivityRequestDTO requestDTO = new SubactivityRequestDTO();
+            SousActivite requestDTO = new SousActivite();
             requestDTO.setActivityName(activityName);
             requestDTO.setName(subactivityName);
 

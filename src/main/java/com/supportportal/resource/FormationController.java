@@ -30,15 +30,11 @@ public class FormationController extends ExceptionHandling {
                                                      @RequestParam("niveau") String niveau,
                                                      @RequestParam("desc") String desc,
                                                      @RequestParam("type") String type,
-                                                     @RequestParam("duree") String duree)  {
+                                                     @RequestParam("duree") String duree,
+                                                   @RequestParam("subActivityName")String subActivityName)  {
         try {
-            Formation formation=new Formation();
-            formation.setName(name);
-            formation.setNiveau(niveau);
-            formation.setDescription(desc);
-            formation.setType(type);
-            formation.setDuree(duree);
-            Formation createdFormation = formationService.createFormation(name,niveau,desc,type,duree);
+            Formation formation = new Formation();
+            Formation createdFormation = formationService.createFormation(name,niveau,desc,type,duree,subActivityName);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdFormation);
 
         } catch (IllegalArgumentException e) {
@@ -47,6 +43,10 @@ public class FormationController extends ExceptionHandling {
         }
     }
 
+    @GetMapping("/formations-with-subActivity-name")
+    public List<Formation> getFormationsWithsubActivityName() {
+        return formationService.findAllFormationsWithSubActivityName();
+    }
 
     @GetMapping("/{name}")
     public ResponseEntity<?> getFormationByName(@PathVariable String name) throws NotFoundException {
@@ -74,19 +74,30 @@ public class FormationController extends ExceptionHandling {
         return ResponseEntity.status(FOUND).body(message);    }
 
 
-    @PutMapping("/update/{name}")
-    public ResponseEntity<Formation> updateFormation(@PathVariable String name,
+    @PutMapping("/update")
+    public ResponseEntity<?> updateFormation(@RequestParam String name,
                                                      @RequestParam("newName") String newName,
                                                      @RequestParam("niveau") String niveau,
                                                      @RequestParam("desc") String desc,
                                                      @RequestParam("type") String type,
-                                                     @RequestParam("duree") String duree) {
-        try {
-            Formation updatedFormation = formationService.updateFormation(name, newName,niveau,desc,type,duree);
-            return ResponseEntity.ok(updatedFormation);
-        }
-        catch (NotFoundException e) {
-            throw new ResponseStatusException(NOT_FOUND);
+                                                     @RequestParam("duree") String duree,
+                                                     @RequestParam("subActivity") String subActivity,
+                                             @RequestParam("newSubActiviteName")  String newSubActiviteName){
+
+
+        try{
+            Formation existingFormation = formationService.getFormationByName(name);
+            if (existingFormation == null) {
+                throw new IllegalArgumentException("Formation not found with name: " + name);
+            }
+            else {
+                formationService.updateFormation(name,newName,niveau,desc,type,duree,subActivity,newSubActiviteName);
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).body(existingFormation);
+
+        } catch (IllegalArgumentException | NotFoundException e) {
+            ErrorResponse errorResponse = new ErrorResponse(BAD_REQUEST.value(), e.getMessage());
+            return ResponseEntity.status(BAD_REQUEST).body(errorResponse);
         }
     }
 

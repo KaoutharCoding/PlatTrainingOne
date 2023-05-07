@@ -1,6 +1,8 @@
 jwt:
   secret: '[a-zA-Z0-9._]^+$Guidelines89797987forAlphabeticalArraNumeralsandOtherSymbo$'
 
+#file:
+#  upload-dir: /courses/
 
 server:
   port: 8082
@@ -25,7 +27,8 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+       # org.hibernate.dialect.MySQL8Dialect
 
     #mvc:
     # throw-exception-if-no-handler-found: true

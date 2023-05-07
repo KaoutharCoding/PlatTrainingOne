@@ -1,7 +1,10 @@
 package com.supportportal.domain;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Entity
 @Table(name="subactivite")
@@ -69,7 +72,12 @@ public class SousActivite {
     @JoinColumn(name = "activity_id")
     private Activity activity;
 
-@Transient
+    @ManyToMany
+
+             @JoinColumn(name = "sousActivity_id")
+
+    private List<Formation> formations;
+    @Transient
     private String activityName;
 
     public SousActivite() {}
@@ -88,6 +96,13 @@ public class SousActivite {
         this.id = id;
     }
 
+  //  public Formation getFormations() {
+      //  return formations;
+    //}
+
+//    public void setFormations(Formation formations) {
+    //    this.formations = formations;
+  //  }
     public String getName() {
         return name;
     }

@@ -1,5 +1,7 @@
 package com.supportportal.domain;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.persistence.*;
 
 @Entity
@@ -8,7 +10,7 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "course_name")
+   // @Column(name = "course_name")
     private String name;
 
     private String niveau;
@@ -22,6 +24,21 @@ public class Course {
     @Transient
     private String formationName;
 
+    @Lob
+    @Column(name = "file_data")
+    private byte[] fileData;
+
+    @Column(name = "original_filename")
+    private String originalFilename;
+    @Column(name = "file_type")
+    private String fileType;
+    @Transient
+    private MultipartFile file;
+   // @Transient
+    @Column(name = "file_url")
+
+    private String fileUrl;
+
     @OneToOne
     @JoinColumn(name = "formation_id")
     private Formation formation;
@@ -32,7 +49,7 @@ public class Course {
     public Course() {
     }
 
-    public Course(Long id, String name, String niveau, String description, String type, String duree, String etat, String quiz, int ordre, Formation formation) {
+    public Course(Long id, String name, String niveau, String description, String type, String duree, String etat, String quiz, int ordre, String formationName, byte[] fileData, String originalFilename, String fileType, MultipartFile file, String fileUrl, Formation formation) {
         this.id = id;
         this.name = name;
         this.niveau = niveau;
@@ -42,6 +59,12 @@ public class Course {
         this.etat = etat;
         this.quiz = quiz;
         this.ordre = ordre;
+        this.formationName = formationName;
+        this.fileData = fileData;
+        this.originalFilename = originalFilename;
+        this.fileType = fileType;
+        this.file = file;
+        this.fileUrl = fileUrl;
         this.formation = formation;
     }
 
@@ -59,6 +82,30 @@ public class Course {
 
     public void setCourseName(String name) {
         this.name = name;
+    }
+
+    public byte[] getFileData() {
+        return fileData;
+    }
+
+    public void setFileData(byte[] fileData) {
+        this.fileData = fileData;
+    }
+
+    public String getOriginalFilename() {
+        return originalFilename;
+    }
+
+    public void setOriginalFilename(String originalFilename) {
+        this.originalFilename = originalFilename;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
     }
 
     public String getNiveau() {
@@ -139,5 +186,21 @@ public class Course {
 
     public void setFormationName(String formationName) {
         this.formationName = formationName;
+    }
+
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
     }
 }

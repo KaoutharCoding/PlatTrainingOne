@@ -1,20 +1,20 @@
 package com.supportportal.service;
 
 import com.supportportal.domain.Formation;
+import com.supportportal.domain.SousActivite;
 import javassist.NotFoundException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 public interface FormationService {
 
-  //  Formation createFormation(Formation formation)  ;
+    //  Formation createFormation(Formation formation)  ;
 
-    Formation createFormation(@RequestParam("name") String name,
-                              @RequestParam("niveau") String niveau,
-                              @RequestParam("desc") String desc,
-                              @RequestParam("type") String type,
-                              @RequestParam("duree") String duree)  ;
+
+    Formation updateFormation(String name, String newName, String niveau, String desc, String type, String duree, String sousActiviteName, String newSubActiviteName) throws NotFoundException;
 
     Formation getFormationById(Long id) throws NotFoundException;
 
@@ -22,9 +22,19 @@ public interface FormationService {
 
     List<Formation> getAllFormations();
 
-    String deleteFormation(String name) throws NotFoundException;
+
+        String deleteFormation(String name) throws NotFoundException;
+
+    Formation getFormationWithSubactivites();
+    Formation findFormationyByName(String name);
 
 
-    Formation updateFormation(String name, String newName, String niveau, String desc, String type, String duree) throws NotFoundException;
+    List<Formation> findAllActivitiesWithActivityName();
 
+    String findFormationNameById(Long id);
+
+    Formation createFormation(String name, String niveau, String desc, String type, String duree, String sousActiviteName);
+
+    List<Formation> findAllFormationsWithSubActivityName();
 }
+

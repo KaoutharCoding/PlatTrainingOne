@@ -1,12 +1,13 @@
 package com.supportportal.service;
 
 import com.supportportal.domain.SousActivite;
-import com.supportportal.domain.SubactivityRequestDTO;
 
 import java.io.IOException;
 import java.util.List;
 
 public interface SousActivityService {
+
+    SousActivite getSubactivityWithActivities(String subactivityName);
 
     SousActivite getSubactivityWithActivities();
 
@@ -23,7 +24,7 @@ public interface SousActivityService {
 
     void deleteSubActivityAll() throws IOException;
 
-    SousActivite createSubactivity(SubactivityRequestDTO requestDTO);
+    SousActivite createSubactivity(SousActivite requestDTO);
 
 
     List<SousActivite> findAllUsersWithActivityName();
