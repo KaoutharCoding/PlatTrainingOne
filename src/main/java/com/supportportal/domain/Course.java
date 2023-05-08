@@ -34,6 +34,7 @@ public class Course implements Serializable {
     private String originalFilename;
     @Column(name = "file_type")
     private String fileType;
+    @JsonIgnore
     @Transient
     private MultipartFile file;
     @Column(name = "file_url")

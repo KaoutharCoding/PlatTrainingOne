@@ -19,20 +19,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.*;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.*;
+import java.net.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import static com.supportportal.constant.FileConstant.*;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -177,8 +170,6 @@ public List<Course> findAllCoursesWithFormationName() {
         } catch (IOException e) {
             throw new RuntimeException("Failed to read file data", e);
         }
-        // Create the course object
-      //  Course course = new Course();
 
 
         Course course = new Course(name, niveau, description, type, duree, etat, quiz, ordre, file ,formation);
@@ -190,9 +181,12 @@ public List<Course> findAllCoursesWithFormationName() {
         course.setFormation(formation);
 
 
+
         return  course;
 
     }
+
+
 
     private void saveProfileImage(Course user, MultipartFile profileImage) throws IOException, NotAnImageFileException {
         if (profileImage != null) {

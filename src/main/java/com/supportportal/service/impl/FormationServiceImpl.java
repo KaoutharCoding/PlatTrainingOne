@@ -8,7 +8,6 @@ import com.supportportal.service.FormationService;
 import com.supportportal.service.SousActivityService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -68,6 +67,8 @@ public class FormationServiceImpl implements FormationService {
     @Override
     public Formation createFormation(String name, String niveau, String desc, String type, String duree, String sousActiviteName) {
         // Check if a formation with the same name already exists
+
+
         if (formationRepository.existsByname(name)) {
             throw new IllegalArgumentException("Formation with name '" + name + "' already exists.");
         }
@@ -87,65 +88,110 @@ public class FormationServiceImpl implements FormationService {
         formation.setType(type);
         formation.setDuree(duree);
         formation.setSousActivite(sousActivite);
+
         sousActivite.setActivityName(a.getName());
         formation.setSubActivityName(sousActiviteName);
+        formation.setSubActivityName(formation.getSousActivite().getActivityName());
+        formation.setSousActivite(sousActivite);
+        formation.setActivityName(formation.getSousActivite().getActivityName());
+        formation.setActivityName(formation.getSousActivite().getActivity().getName());
+
 
         return formationRepository.save(formation);
     }
 
     @Override
-    public List<Formation> findAllFormationsWithSubActivityName() {
-        List<Formation> formations = getAllFormations();
+    public Formation updateFormation(String currentFormationName, String newName, String newNiveau, String newDescription, String newType, String newDuree, String newSousActiviteName) {
 
-        for (Formation formation : formations) {
-            if (formation.getSousActivite() != null) {
-                String activityName = findFormationNameById(formation.getSousActivite().getId());
-                formation.setSubActivityName(activityName);
-                SousActivite s = formation.getSousActivite();
-                s.setActivityName(formation.getSousActivite().getActivity().getName());
-
-                //  s.setActivity(formation.getSousActivite().getActivity());
-                formation.setSubActivityName(activityName);
-                // findAllActivitiesWithActivityName();
-                formation.setSousActivite(formation.getSousActivite());
-                formation.setActivityName(formation.getSousActivite().getActivityName());
-
-            }
+        Formation existingFormation = formationRepository.findByName(currentFormationName);
+        if (existingFormation == null) {
+            throw new IllegalArgumentException("Formation not found with name: " + currentFormationName);
         }
-        return formations;
+
+        // fetch the new SousActivite object for the new subActivityName
+        SousActivite newSousActivite = sousActivityService.findSousActivityByName(newSousActiviteName);
+        if (newSousActivite == null) {
+            throw new IllegalArgumentException("SubActivity not found with name: " + newSousActiviteName);
+        }
+
+        // update the existing Formation object with the new details
+        existingFormation.setName(newName);
+        existingFormation.setNiveau(newNiveau);
+        existingFormation.setDescription(newDescription);
+        existingFormation.setType(newType);
+        existingFormation.setDuree(newDuree);
+        existingFormation.setSousActivite(newSousActivite);
+        newSousActivite.setActivityName(newSousActivite.getActivity().getName());
+
+        existingFormation.setActivityName(newSousActivite.getActivity().getName());
+        existingFormation.setSubActivityName(newSousActivite.getName());
+
+
+        // save the updated Formation object
+        formationRepository.save(existingFormation);
+
+        return existingFormation;
     }
 
-    @Override
-    public Formation updateFormation(String name, String newName, String niveau, String desc, String type, String duree, String sousActiviteName, String newSubActiviteName) throws NotFoundException {
-        Formation existingFormation = formationRepository.findByName(name);
+
+
+
+    //   @Override
+   /* public Formation updateFormation(String currentFormationName, Formation formation) {
+
+        Formation existingFormation = formationRepository.findByName(formation.getName());
         if (existingFormation == null) {
-            throw new IllegalArgumentException("Formation not found with name: " + name);
+            throw new IllegalArgumentException("Formation not found with name: " + formation.getName());
         }
-        SousActivite sousActivite = sousActivityService.findSousActivityByName(sousActiviteName);
+        SousActivite sousActivite = sousActivityService.findSousActivityByName(formation.getSubActivityName());
         if (sousActivite == null) {
-            throw new IllegalArgumentException("SubActivity not found with name: " + sousActiviteName);
+            throw new IllegalArgumentException("SubActivity not found with name: " + formation.getSubActivityName());
         }
         Activity a = sousActivite.getActivity();
 
-        // fetch the new SousActivite object for the new subActivityName
-        SousActivite newSousActivite = sousActivityService.findSousActivityByName(newSubActiviteName);
-        if (newSousActivite == null) {
-            throw new IllegalArgumentException("SubActivity not found with name: " + newSubActiviteName);
-        }
 
-        existingFormation.setName(newName);
-        existingFormation.setNiveau(niveau);
-        existingFormation.setDescription(desc);
-        existingFormation.setType(type);
-        existingFormation.setDuree(duree);
+        existingFormation.setName(formation.getName());
+        existingFormation.setNiveau(formation.getNiveau());
+        existingFormation.setDescription(formation.getDescription());
+        existingFormation.setType(formation.getType());
+        existingFormation.setDuree(formation.getDuree());
 
-        existingFormation.setSousActivite(newSousActivite); // set the new SousActivite object
-        newSousActivite.setActivityName(a.getName());
+        existingFormation.setSousActivite(formation.getSousActivite()); // set the new SousActivite object
         existingFormation.setActivityName(existingFormation.getActivityName());
-        existingFormation.setSubActivityName(newSubActiviteName);
+        existingFormation.setSubActivityName(formation.getSubActivityName());
         formationRepository.save(existingFormation);
         return existingFormation;
     }
+*/
+
+    @Override
+ public List<Formation> findAllFormationsWithSubActivityAndActivityNames() {
+ List<Formation> formations = formationRepository.findAll();
+ for (Formation formation : formations) {
+ if (formation.getSousActivite() != null) {
+ String subActivityName = formation.getSousActivite().getName();
+ formation.setSubActivityName(subActivityName);
+ if (formation.getSousActivite().getActivity() != null) {
+
+   //  String activityName = formation.getSousActivite().getActivity().getName();
+     formation.setSubActivityName(formation.getSubActivityName());
+     formation.getSousActivite().setActivityName(formation.getSousActivite().getActivity().getName());
+
+     formation.setActivityName(formation.getSousActivite().getActivityName());
+     formation.setSubActivityName(formation.getSousActivite().getName());
+
+     //formation.setActivityName(formation.getSousActivite().getActivityName());
+
+
+ }
+ }
+
+}
+        return formations;
+
+    }
+
+
 
 
 

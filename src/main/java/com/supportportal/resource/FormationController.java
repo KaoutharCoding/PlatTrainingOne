@@ -43,10 +43,8 @@ public class FormationController extends ExceptionHandling {
         }
     }
 
-    @GetMapping("/formations-with-subActivity-name")
-    public List<Formation> getFormationsWithsubActivityName() {
-        return formationService.findAllFormationsWithSubActivityName();
-    }
+    @GetMapping("/with-subactivity-and-activity-names") public List<Formation> getFormationsWithSubActivityAndActivityNames() {
+        return formationService.findAllFormationsWithSubActivityAndActivityNames(); }
 
     @GetMapping("/{name}")
     public ResponseEntity<?> getFormationByName(@PathVariable String name) throws NotFoundException {
@@ -75,31 +73,23 @@ public class FormationController extends ExceptionHandling {
 
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateFormation(@RequestParam String name,
-                                                     @RequestParam("newName") String newName,
-                                                     @RequestParam("niveau") String niveau,
-                                                     @RequestParam("desc") String desc,
-                                                     @RequestParam("type") String type,
-                                                     @RequestParam("duree") String duree,
-                                                     @RequestParam("subActivity") String subActivity,
-                                             @RequestParam("newSubActiviteName")  String newSubActiviteName){
+    public ResponseEntity<Formation> updateFormation(
+            @RequestParam String currentFormationName,
+            @RequestParam String newName,
+            @RequestParam String newNiveau,
+            @RequestParam String newDescription,
+            @RequestParam String newType,
+            @RequestParam String newDuree,
+            @RequestParam String newSousActiviteName) {
 
 
-        try{
-            Formation existingFormation = formationService.getFormationByName(name);
-            if (existingFormation == null) {
-                throw new IllegalArgumentException("Formation not found with name: " + name);
-            }
-            else {
-                formationService.updateFormation(name,newName,niveau,desc,type,duree,subActivity,newSubActiviteName);
-            }
-            return ResponseEntity.status(HttpStatus.CREATED).body(existingFormation);
 
-        } catch (IllegalArgumentException | NotFoundException e) {
-            ErrorResponse errorResponse = new ErrorResponse(BAD_REQUEST.value(), e.getMessage());
-            return ResponseEntity.status(BAD_REQUEST).body(errorResponse);
-        }
+            Formation updatedFormation = formationService.updateFormation(currentFormationName,newName,newNiveau,newDescription,newType,newDuree,newSousActiviteName );
+            return new ResponseEntity<>(updatedFormation, OK);
+
+
     }
+
 
 
 }
