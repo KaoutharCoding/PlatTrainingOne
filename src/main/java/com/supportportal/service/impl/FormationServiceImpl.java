@@ -93,7 +93,7 @@ public class FormationServiceImpl implements FormationService {
         return formationRepository.save(formation);
     }
 
-@Override
+    @Override
     public List<Formation> findAllFormationsWithSubActivityName() {
         List<Formation> formations = getAllFormations();
 
@@ -104,9 +104,9 @@ public class FormationServiceImpl implements FormationService {
                 SousActivite s = formation.getSousActivite();
                 s.setActivityName(formation.getSousActivite().getActivity().getName());
 
-              //  s.setActivity(formation.getSousActivite().getActivity());
+                //  s.setActivity(formation.getSousActivite().getActivity());
                 formation.setSubActivityName(activityName);
-               // findAllActivitiesWithActivityName();
+                // findAllActivitiesWithActivityName();
                 formation.setSousActivite(formation.getSousActivite());
                 formation.setActivityName(formation.getSousActivite().getActivityName());
 
@@ -163,7 +163,7 @@ public class FormationServiceImpl implements FormationService {
 
 
 
-   @Override
+    @Override
     public List<Formation> getAllFormations() {
         return formationRepository.findAll();
     }
@@ -176,7 +176,7 @@ public class FormationServiceImpl implements FormationService {
         return "formation with name " + name + " has been deleted successfully.";
     }
 
-  //  @Override
+    //  @Override
     public Formation getFormationWithSubactivites() {
         return null;
     }

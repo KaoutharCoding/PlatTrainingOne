@@ -25,7 +25,6 @@ public class Formation {
 
     @Transient
    private String subActivityName;
-
     private String ActivityName;
 
     // Constructors, getters, and setters
