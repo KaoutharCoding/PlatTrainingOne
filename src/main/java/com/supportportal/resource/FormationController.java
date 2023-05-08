@@ -82,8 +82,6 @@ public class FormationController extends ExceptionHandling {
             @RequestParam String newDuree,
             @RequestParam String newSousActiviteName) {
 
-
-
             Formation updatedFormation = formationService.updateFormation(currentFormationName,newName,newNiveau,newDescription,newType,newDuree,newSousActiviteName );
             return new ResponseEntity<>(updatedFormation, OK);
 
